@@ -1565,8 +1565,15 @@ function score(r) {
   // Time
   if (S.time === 'rushed') {
     if (r.waitPeak === 'slow') return -1;
-    if (r.driveMin) return -1;
-    if (r.walkMin > 12) return -1;
+    if (S.country === 'th') {
+      // Bangkok: BTS/MRT + short taxi is the norm — allow up to 20 min walk or 15 min drive
+      if (r.driveMin && r.driveMin > 15) return -1;
+      if (!r.driveMin && r.walkMin > 20) return -1;
+    } else {
+      // Malaysia: office-area walk-in only
+      if (r.driveMin) return -1;
+      if (r.walkMin > 12) return -1;
+    }
     if (r.waitPeak === 'fast') s += 8;
     if (PEAK.level === 'red' && r.waitPeak === 'moderate') s -= 3;
   }
