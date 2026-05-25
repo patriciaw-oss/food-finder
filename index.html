@@ -18,9 +18,12 @@
 
     /* ── Header ── */
     .hdr{background:linear-gradient(135deg,#00B14F 0%,#007a36 100%);padding:14px 18px;display:flex;align-items:center;gap:11px;flex-shrink:0}
-    .hdr-av{width:44px;height:44px;background:rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+    .hdr-av{width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.18)}
+    .hdr-av img{width:100%;height:100%;object-fit:cover;display:block}
     .hdr-info h1{color:#fff;font-size:15px;font-weight:700}
     .hdr-info p{color:rgba(255,255,255,.75);font-size:11px;margin-top:2px}
+    .hdr-tagline{color:rgba(255,255,255,.9);font-size:10px;margin-top:1px;font-style:italic}
+    .hdr-loc{color:rgba(255,255,255,.6);font-size:10px;margin-top:1px}
     .hdr-r{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
     .hbadge{background:rgba(255,255,255,.18);color:#fff;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px}
     .hpeak{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
@@ -37,7 +40,8 @@
     .row{display:flex;align-items:flex-end;gap:7px;animation:fu .2s ease}
     .row.user{flex-direction:row-reverse}
     @keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-    .bicon{width:27px;height:27px;background:var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+    .bicon{width:27px;height:27px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--g)}
+    .bicon img{width:100%;height:100%;object-fit:cover;display:block}
     .bub{max-width:80%;padding:10px 13px;border-radius:var(--r);font-size:13.5px;line-height:1.55;color:var(--text)}
     .bub.bot{background:var(--w);border:1px solid var(--border);border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
     .bub.user{background:var(--g);color:#fff;border-bottom-right-radius:4px}
@@ -155,10 +159,11 @@
 <body>
 <div class="app">
   <div class="hdr">
-    <div class="hdr-av">🍽️</div>
+    <div class="hdr-av"><img src="avatar.png" alt="En-Nibble-Ment"></div>
     <div class="hdr-info">
       <h1>En-Nibble-Ment</h1>
-      <p>You enable the sellers. We enable the stomach</p>
+      <p class="hdr-tagline">You enable the sellers. We enable the stomach</p>
+      <p class="hdr-loc"></p>
     </div>
     <div class="hdr-r">
       <div class="hbadge" id="hdrBadge">🇲🇾 Grab HQ</div>
@@ -2435,18 +2440,18 @@ const chatEl=document.getElementById('chat'), qrEl=document.getElementById('qr')
 function addMsg(html,who,cls='') {
   const row=document.createElement('div'); row.className=`row ${who}`;
   const bubCls = who==='bot' ? `bub bot ${cls}` : 'bub user';
-  if(who==='bot') row.innerHTML=`<div class="bicon">🍽️</div><div class="${bubCls}">${html}</div>`;
+  if(who==='bot') row.innerHTML=`<div class="bicon"><img src="avatar.png" alt="bot"></div><div class="${bubCls}">${html}</div>`;
   else row.innerHTML=`<div class="${bubCls}">${html}</div>`;
   chatEl.appendChild(row); scroll();
 }
 function addCard(html) {
   const row=document.createElement('div'); row.className='row bot';
-  row.innerHTML=`<div class="bicon">🍽️</div><div style="max-width:92%;flex:1">${html}</div>`;
+  row.innerHTML=`<div class="bicon"><img src="avatar.png" alt="bot"></div><div style="max-width:92%;flex:1">${html}</div>`;
   chatEl.appendChild(row); scroll();
 }
 function showTyping(){
   const t=document.createElement('div'); t.className='typing'; t.id='typing';
-  t.innerHTML=`<div class="bicon">🍽️</div><div class="tdots"><span></span><span></span><span></span></div>`;
+  t.innerHTML=`<div class="bicon"><img src="avatar.png" alt="bot"></div><div class="tdots"><span></span><span></span><span></span></div>`;
   chatEl.appendChild(t); scroll();
 }
 function killTyping(){const t=document.getElementById('typing'); if(t)t.remove();}
@@ -2984,7 +2989,7 @@ window.pickCountry = async function(code) {
   // Reset lang to 'en' when picking a new country (askLanguage will re-set it for TH)
   if (code !== 'th') S.lang = 'en';
   // Update header subtitle dynamically
-  const subEl = document.querySelector('.hdr-info p');
+  const subEl = document.querySelector('.hdr-info .hdr-loc');
   if (subEl) subEl.textContent = `${cc.flag} ${cc.name} · ${cc.office}`;
   updateLangToggle();
   refreshPeakUI();
