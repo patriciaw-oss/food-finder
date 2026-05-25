@@ -179,23 +179,171 @@
 </div>
 
 <script>
-// ─── Peak time ────────────────────────────────────────────────────────────────
-function getPeak() {
+// ─── Peak time (meal-aware + country/office-aware) ───────────────────────────
+// All offices are UTC+8 — same clock; copy reflects each Grab site (MY / TH / PH).
+const PEAK_COPY = {
+  _default: {
+    grabBusy:     { level:'yellow', label:'🛵 Rider peak',     note:'Drivers are stretched during meal windows — pad ETA or order a bit early.' },
+    grabCalm:     { level:'green',  label:'🟢 Delivery calmer', note:'Off-peak for riders — usually quicker handoffs.' },
+    dinnerWeRed:  { level:'red',    label:'🔴 Dinner peak',    note:'Busy 5:30–9 PM weekends. Popular tables turn fast — book or queue early.' },
+    dinnerWeYel:  { level:'yellow', label:'🟡 Evening build-up', note:'Crowds pick up toward dinner — aim slightly earlier than usual.' },
+    dinnerWkYel:  { level:'yellow', label:'🟡 Dinner rush',    note:'Peak 6–9 PM. Popular spots fill up fast — book ahead.' },
+    preDinnerWk:  { level:'yellow', label:'🟡 Pre-dinner',     note:'5–6 PM ramps up — good window to arrive a little early.' },
+    planDinnerNoon:{ level:'green', label:'🟢 Planning dinner', note:'It’s lunch rush outside, but that’s separate from dinner service — still line up reservations for 6 PM onward.' },
+    afternoonWk:  { level:'green',  label:'🟢 Afternoon',      note:'Calm before the dinner wave — easy time to secure a table for later.' },
+    offDinner:    { level:'green',  label:'🟢 Off-peak (dinner)', note:'Reasonable timing for dinner — lighter evening pressure right now.' },
+    lunchWeRed:   { level:'red',    label:'🔴 Weekend peak',   note:'Busy 12–3 PM weekends. Expect 20–30 min waits.' },
+    lunchWeYel:   { level:'yellow', label:'🟡 Getting busy',   note:'Moderate weekend crowds around mealtime.' },
+    lunchEvening: { level:'green',  label:'🟢 Evening',        note:'Lunch service is mostly over — bias toward all-day spots or plan for tomorrow.' },
+    lunchWkRed:   { level:'red',    label:'🔴 Lunch rush',    note:'Peak 12–1:30 PM. Food courts turn fastest; sit-down adds 15–25 min.' },
+    lunchWkDinHr: { level:'green',  label:'🟢 Dinner hour',    note:'Lunch kitchens are winding down — great for tomorrow’s lunch bookings or all-day cafés.' },
+    lunchPrePost: { level:'yellow', label:'🟡 Pre/post rush',  note:'Slightly busy. Aim before 11:45 AM or after 1:30 PM.' },
+    offLunch:     { level:'green',  label:'🟢 Off-peak (lunch)', note:'Good timing — lighter lunch crowds right now.' },
+    agWeRed:      { level:'red',    label:'🔴 Weekend peak',   note:'Busy 12–3 PM weekends. Expect 20–30 min waits.' },
+    agWeYel:      { level:'yellow', label:'🟡 Getting busy',   note:'Moderate weekend crowds.' },
+    agWkLunch:    { level:'red',    label:'🔴 Lunch rush',     note:'Peak 12–1:30 PM. Food courts fastest; sit-down waits longer.' },
+    agWkDinner:   { level:'yellow', label:'🟡 Dinner rush',    note:'Peak 6–9 PM. Popular spots fill up fast — book ahead.' },
+    agWkPrePost:  { level:'yellow', label:'🟡 Pre/post rush',   note:'Slightly busy. Aim before 11:45 AM or after 1:30 PM.' },
+    offAgn:       { level:'green',  label:'🟢 Off-peak',       note:'Good timing — minimal waits expected.' },
+  },
+  my: {
+    lunchWkRed:   { level:'red',    label:'🔴 Lunch rush',    note:'Peak 12–1:30 PM near First Avenue / 1 Utama — food courts fastest; sit-down adds 15–25 min.' },
+    agWkLunch:    { level:'red',    label:'🔴 Lunch rush',    note:'Peak 12–1:30 PM around PJ malls — food courts fastest; sit-down adds 15–25 min.' },
+    agWeRed:      { level:'red',    label:'🔴 Weekend peak',   note:'1 Utama / The Curve belt 12–3 PM — carparks and lifts add time.' },
+    lunchWkDinHr: { level:'green',  label:'🟢 Dinner hour',    note:'PJ lunch kitchens winding down — good for all-day cafés or planning tomorrow’s 1U run.' },
+    planDinnerNoon:{ level:'green', label:'🟢 Planning dinner', note:'Mall lunch crowds are loud now, but dinner venues open later — still book hotspots from 6 PM.' },
+    grabBusy:     { level:'yellow', label:'🛵 Rider peak',     note:'GrabFood around PJ / 1U spikes at lunch & dinner — pad ETA.' },
+  },
+  th: {
+    grabBusy:     { level:'yellow', label:'🛵 Rider peak',     note:'Sukhumvit / Asoke meal peaks — riders and mall exits clog — pad ETA on GrabFood / LINE MAN.' },
+    lunchWkRed:   { level:'red',    label:'🔴 Lunch rush',    note:'12–2 PM near The PARQ, Terminal 21 & One Bangkok — street queues and food courts stack fast.' },
+    agWkLunch:    { level:'red',    label:'🔴 Lunch rush',    note:'12–2 PM across central Bangkok offices — queues long at mall food courts.' },
+    dinnerWkYel:  { level:'yellow', label:'🟡 Dinner rush',    note:'~6–10 PM Sukhumvit, Silom & Thonglor — traffic + full houses — book or leave early.' },
+    agWkDinner:   { level:'yellow', label:'🟡 Dinner rush',    note:'~6–10 PM Bangkok core — BTS busy, restaurants full — pad travel time.' },
+    dinnerWeRed:  { level:'red',    label:'🔴 Dinner peak',    note:'Weekend 6–10 PM Thonglor / riverside / malls — hardest tables & cabs.' },
+    preDinnerWk:  { level:'yellow', label:'🟡 Pre-dinner',     note:'5–6 PM Asoke ramps up — good window to beat the BTS squeeze.' },
+    planDinnerNoon:{ level:'green', label:'🟢 Planning dinner', note:'Office lunch crowds ≠ dinner seats — night spots along Sukhumvit still need 6 PM+ bookings.' },
+    lunchWkDinHr: { level:'green',  label:'🟢 Evening',        note:'Most CBD lunch menus close — skew to hotel dining, night markets, or all-day mall stalls.' },
+    lunchEvening: { level:'green',  label:'🟢 Evening',        note:'Weekend night in Bangkok — lunch picks are limited; dinner venues rule.' },
+    agWeRed:      { level:'red',    label:'🔴 Weekend peak',   note:'Siam / EmQuartier / riverside malls 12–3 PM — queues spill into BTS links.' },
+  },
+  ph: {
+    grabBusy:     { level:'yellow', label:'🛵 Rider peak',     note:'Ortigas lunch & dinner waves hit Exchange Rd & Megamall — GrabFood ETAs stretch.' },
+    lunchWkRed:   { level:'red',    label:'🔴 Lunch rush',    note:'12–2 PM Ortigas Center — towers empty onto Jade / Exchange Rd & mall bridges.' },
+    agWkLunch:    { level:'red',    label:'🔴 Lunch rush',    note:'12–2 PM Metro Manila CBDs — office + mall traffic peaks.' },
+    agWeRed:      { level:'red',    label:'🔴 Weekend peak',   note:'Ortigas & Megamall 12–3 PM — parking, lifts, and food halls all stack.' },
+    dinnerWkYel:  { level:'yellow', label:'🟡 Dinner rush',    note:'6–9 PM Ortigas & BGC connectors clog — book Megamall / Kapitolyo hotspots early.' },
+    agWkDinner:   { level:'yellow', label:'🟡 Dinner rush',    note:'6–9 PM NCR dining strips fill — pad driving time across Pasig–Mandaluyong.' },
+    dinnerWeRed:  { level:'red',    label:'🔴 Dinner peak',    note:'Weekend 6–9 PM malls + Ortigas nightlife — longest queues & parking hunts.' },
+    planDinnerNoon:{ level:'green', label:'🟢 Planning dinner', note:'Noon is office lunch around Exquadra; dinner service is a different wave — reserve from 6 PM.' },
+    afternoonWk:  { level:'green',  label:'🟢 Afternoon',      note:'Calm before Ortigas dinner — snag reservations before Megamall rush.' },
+  },
+};
+
+function peakLine(country, key) {
+  const c = country && PEAK_COPY[country] ? country : '_default';
+  return (PEAK_COPY[c] && PEAK_COPY[c][key]) || PEAK_COPY._default[key];
+}
+
+function getPeak(mealType, country) {
   const now = new Date(), h = now.getHours(), m = now.getMinutes();
   const mins = h*60+m, wd = now.getDay(), weekend = wd===0||wd===6;
-  if (weekend) {
-    if (mins>=720&&mins<=900) return {level:'red',label:'🔴 Weekend Peak',note:'Busy 12–3 PM weekends. Expect 20–30 min waits.'};
-    if (mins>=660&&mins<=960) return {level:'yellow',label:'🟡 Getting Busy',note:'Moderate weekend crowds.'};
-  } else {
-    if (mins>=720&&mins<=810) return {level:'red',label:'🔴 Lunch Rush',note:'Peak 12–1:30 PM. Food courts fastest; sit-down adds 15–25 min.'};
-    if (mins>=1080&&mins<=1260) return {level:'yellow',label:'🟡 Dinner Rush',note:'Peak 6–9 PM. Popular spots fill up fast — book ahead.'};
-    if (mins>=660&&mins<=840) return {level:'yellow',label:'🟡 Pre/Post Rush',note:'Slightly busy. Aim before 11:45 AM or after 1:30 PM.'};
+  const ctry = country || null;
+
+  const dinnerRushWk = (country === 'th')
+    ? (mins>=1080&&mins<=1320)   // 6–10 PM Bangkok dinner band
+    : (mins>=1080&&mins<=1260);  // 6–9 PM MY / PH
+  const noonLunchCluster = (country === 'th')
+    ? (mins>=720&&mins<=840)     // 12–2 PM Bangkok office lunch
+    : (mins>=720&&mins<=810);    // 12–1:30 PM MY / PH / default
+
+  if (mealType === 'grab-delivery') {
+    const riderBusy = weekend ? (mins>=690&&mins<=1320) : (mins>=660&&mins<=1260);
+    if (riderBusy) return peakLine(ctry, 'grabBusy');
+    return peakLine(ctry, 'grabCalm');
   }
-  return {level:'green',label:'🟢 Off-Peak',note:'Good timing — minimal waits expected.'};
+
+  if (mealType === 'dinner') {
+    if (weekend) {
+      const dinnerWeRedHit = (country === 'th')
+        ? (mins>=1050&&mins<=1320)
+        : (mins>=1050&&mins<=1260);
+      if (dinnerWeRedHit) return peakLine(ctry, 'dinnerWeRed');
+      if (mins>=990&&mins<=1320) return peakLine(ctry, 'dinnerWeYel');
+    } else {
+      if (dinnerRushWk) return peakLine(ctry, 'dinnerWkYel');
+      if (mins>=1020&&mins<1080) return peakLine(ctry, 'preDinnerWk');
+      if (noonLunchCluster) return peakLine(ctry, 'planDinnerNoon');
+      if (mins>=660&&mins<=840) return peakLine(ctry, 'afternoonWk');
+    }
+    return peakLine(ctry, 'offDinner');
+  }
+
+  if (mealType === 'lunch') {
+    if (weekend) {
+      if (mins>=720&&mins<=900) return peakLine(ctry, 'lunchWeRed');
+      if (mins>=660&&mins<=960) return peakLine(ctry, 'lunchWeYel');
+      if (mins>=1080&&mins<=1260) return peakLine(ctry, 'lunchEvening');
+    } else {
+      if (noonLunchCluster) return peakLine(ctry, 'lunchWkRed');
+      if (mins>=1080&&mins<=1260) return peakLine(ctry, 'lunchWkDinHr');
+      if (mins>=660&&mins<=840) return peakLine(ctry, 'lunchPrePost');
+    }
+    return peakLine(ctry, 'offLunch');
+  }
+
+  // Before meal type: clock snapshot (still office-aware once a country is chosen)
+  if (weekend) {
+    if (mins>=720&&mins<=900) return peakLine(ctry, 'agWeRed');
+    if (mins>=660&&mins<=960) return peakLine(ctry, 'agWeYel');
+  } else {
+    if (noonLunchCluster) return peakLine(ctry, 'agWkLunch');
+    if (dinnerRushWk) return peakLine(ctry, 'agWkDinner');
+    if (mins>=660&&mins<=840) return peakLine(ctry, 'agWkPrePost');
+  }
+  return peakLine(ctry, 'offAgn');
 }
-const PEAK = getPeak();
-const pb = document.getElementById('peakBadge');
-pb.textContent = PEAK.label; pb.className = 'hpeak '+PEAK.level;
+
+function refreshPeakUI() {
+  const mt = (typeof S !== 'undefined' && S && S.mealType) ? S.mealType : null;
+  const c = (typeof S !== 'undefined' && S && S.country) ? S.country : null;
+  const p = getPeak(mt, c);
+  const el = document.getElementById('peakBadge');
+  if (el) { el.textContent = p.label; el.className = 'hpeak ' + p.level; }
+}
+
+/** Short hint once an area preference is locked in (lunch/dinner “location category”). */
+function peakAreaSuffix(country, areaFilter) {
+  if (!areaFilter || !country) return '';
+  const MAP = {
+    my: {
+      'one-utama-only':' · 1 Utama / First Avenue pocket',
+      'avoid-one-utama':' · PJ streets (skipping 1U)',
+      'any-nearby':' · PJ mall belt',
+      'pj-nearby':' · PJ / Uptown / TTDI band',
+      'mid-kl':' · Bangsar / Mont Kiara angle',
+      'anywhere':' · Full KL Valley',
+    },
+    th: {
+      'terminal21-onebkk':' · Terminal 21 / One Bangkok',
+      'lumpini-silom':' · Lumpini → Silom',
+      'any-nearby-th':' · Central BTS band',
+      'th-nearby':' · Asoke / Silom / Sathorn',
+      'th-midrange':' · Thonglor / Riverside / Nana',
+      'th-anywhere':' · Wide Bangkok',
+    },
+    ph: {
+      'ph-lunch-conv':' · Exquadra doorstep',
+      'ph-lunch-fastfood':' · Ortigas fast-food ring',
+      'ph-lunch-best':' · Walk + short drive mix',
+      'ph-dinner-ortigas':' · Ortigas / Megamall ring',
+      'ph-dinner-metro':' · BGC / Makati + Ortigas',
+      'ph-dinner-wide':' · Metro Manila (sensible)',
+    },
+  };
+  const pack = MAP[country];
+  return (pack && pack[areaFilter]) || '';
+}
 
 // ─── Database ─────────────────────────────────────────────────────────────────
 // mealTypes: 'lunch' | 'dinner' | 'both'
@@ -964,6 +1112,7 @@ let S = {
   groupSize:null,time:null,dietary:[],craving:null,budget:null,vibe:null,
   last:[],shown:[],shownCuisines:[],rejections:[],excluded:[]
 };
+refreshPeakUI();
 
 // ─── Area filter logic ────────────────────────────────────────────────────────
 const LUNCH_AREA_SETS = {
@@ -1005,6 +1154,7 @@ const DINNER_AREA_SETS_PH = {
 const COUNTRY_CONFIG = {
   my: {
     name:'Malaysia', flag:'🇲🇾', office:'First Avenue, Petaling Jaya',
+    relaxedRadiusMin:32, relaxedWalkMin:22,
     currency:'RM',
     budgetCaps:       {low:25,  mid:50,  high:90},
     dinnerBudgetCaps: {low:25,  mid:100, high:200},
@@ -1054,6 +1204,7 @@ const COUNTRY_CONFIG = {
   },
   th: {
     name:'Thailand', flag:'🇹🇭', office:'The PARQ, Bangkok',
+    relaxedRadiusMin:38, relaxedWalkMin:25,
     currency:'฿',
     budgetCaps:       {low:100, mid:300, high:600},
     dinnerBudgetCaps: {low:100, mid:800, high:1500},
@@ -1141,6 +1292,7 @@ const COUNTRY_CONFIG = {
   },
   ph: {
     name:'Philippines', flag:'🇵🇭', office:'Exquadra Tower, Ortigas Center, Pasig',
+    relaxedRadiusMin:36, relaxedWalkMin:22,
     currency:'₱',
     budgetCaps:       {low:149, mid:300, high:500},
     dinnerBudgetCaps: {low:400, mid:800, high:1400},
@@ -1746,23 +1898,74 @@ window.excludeRestaurant = async function(id, name) {
   }
 };
 
-// ─── Scoring ──────────────────────────────────────────────────────────────────
-function score(r) {
+// ─── Relaxed matching (cuisine & dietary first; area/time soft with disclaimers) ─
+function beyondRelaxedRadius(r, cc) {
+  const dm = cc.relaxedRadiusMin != null ? cc.relaxedRadiusMin : 36;
+  const wm = cc.relaxedWalkMin != null ? cc.relaxedWalkMin : 22;
+  if (r.driveMin != null && r.driveMin > dm) return true;
+  if (r.walkMin != null && r.walkMin > wm) return true;
+  return false;
+}
+
+/** True for sit-down / heritage-style Filipino — excludes convenience & quick-service chains. */
+function authenticFilipinoCuisine(cuisine) {
+  const c = (cuisine || '').toLowerCase();
+  if (!/filipino|carinderia|sinigang|sisig|adobo|kare-kare|lechon|bulalo|lumpia|tapsilog|silog/.test(c)) return false;
+  if (/fast food|convenience|quick service|convenience store|fried chicken chain/i.test(c)) return false;
+  return true;
+}
+
+function cravingCuisineMatch(r) {
+  const craving = S.craving;
+  if (!craving || craving === 'any') return { matched: true, strength: 'strong' };
+  if (craving === 'light') return { matched: !!r.healthy, strength: r.healthy ? 'strong' : 'none' };
+  if (craving === 'localfood' && S.country === 'ph') {
+    if (authenticFilipinoCuisine(r.cuisine)) return { matched: true, strength: 'strong' };
+    if (/filipino/i.test(r.cuisine)) return { matched: false, strength: 'none' };
+    return { matched: false, strength: 'none' };
+  }
+  const cMap = {
+    malaysian:     ['Malaysian','Kopitiam','Nyonya','Peranakan','Ipoh','Malay'],
+    localfood:     ['Carinderia'],
+    fastfood:      ['Fast Food','Convenience','Convenience Store'],
+    americanfood:  ['American'],
+    pasta:         ['Pasta','Italian'],
+    thai:          ['Thai','Food Court','Sukiyaki','Street Food','Royal Thai','Hawker'],
+    esarn:         ['Northeastern','E-sarn','Isaan'],
+    thaifinedining:['Modern Thai','Royal Thai','Southern Thai'],
+    rooftop:       ['Rooftop'],
+    japanese:      ['Japanese','Ramen','Mazesoba','Sushi','Omakase','Wagyu','Izakaya'],
+    western:       ['Western','BBQ','French','American','Spanish','Bistro','Tapas','Café','Italian','Neapolitan'],
+    chinese:       ['Chinese','Taiwanese','Dim Sum','Fujian','Hotpot','Sukiyaki'],
+    korean:        ['Korean'],
+    latin:         ['Latin','Peruvian'],
+    bold:          ['Thai','Korean','Peri-Peri','Nashville','Wagyu','BBQ','Hotpot'],
+    any:           [],
+  };
+  const keys = cMap[craving] || [];
+  if (!keys.length) return { matched: true, strength: 'strong' };
+  const hit = keys.some(k => r.cuisine.toLowerCase().includes(k.toLowerCase()));
+  return { matched: hit, strength: hit ? 'strong' : 'none' };
+}
+
+function evaluatePick(r) {
+  const disclaimers = [];
+  const tier = { craving: 0, dietary: 0, area: 0, time: 0, budget: 0 };
   let s = 0;
+  const pk = getPeak(S.mealType || null, S.country || null);
+  const cc = COUNTRY_CONFIG[S.country] || COUNTRY_CONFIG.my;
+  const office = cc.deliveryOffice || cc.office || 'the office';
 
-  // Country filter — r.city undefined means Malaysia (legacy records)
   const rCountry = r.city === 'thailand' ? 'th' : r.city === 'philippines' ? 'ph' : 'my';
-  if (rCountry !== S.country) return -1;
+  if (rCountry !== S.country) return { r, s: -1, hardFail: true, disclaimers, tier };
 
-  // Meal type match
-  if (S.mealType === 'lunch' && !r.mealTypes.includes('lunch')) return -1;
-  if (S.mealType === 'dinner' && !r.mealTypes.includes('dinner')) return -1;
+  if (S.mealType === 'lunch' && !r.mealTypes.includes('lunch')) return { r, s: -1, hardFail: true, disclaimers, tier };
+  if (S.mealType === 'dinner' && !r.mealTypes.includes('dinner')) return { r, s: -1, hardFail: true, disclaimers, tier };
 
-  // ── Operating hours filter ───────────────────────────────────────────────
   const openStat = getOpenStatus(r.id);
-  if (openStat.status === 'closed') return -1;
+  if (openStat.status === 'closed') return { r, s: -1, hardFail: true, disclaimers, tier };
   if (openStat.status === 'not-yet') {
-    if (S.time === 'rushed') return -1;
+    if (S.time === 'rushed') return { r, s: -1, hardFail: true, disclaimers, tier };
     s -= 6;
   }
   if (openStat.status === 'opening-soon') s -= 2;
@@ -1770,43 +1973,45 @@ function score(r) {
     if (S.time === 'rushed' || S.time === 'normal') s -= 10;
     else s -= 4;
   }
-  if (openStat.status === 'open') s += 2; // verified open bonus
+  if (openStat.status === 'open') s += 2;
 
-  // ── Reservation filter ───────────────────────────────────────────────────
   const res = RESERVATION[r.id];
   if (S.planningAhead === 'now') {
-    if (res && res.required) return -1;        // Can't walk into these
-    if (res && res.recommended) s -= 5;        // Possible walk-in but risky
+    if (res && res.required) return { r, s: -1, hardFail: true, disclaimers, tier };
+    if (res && res.recommended) s -= 5;
   }
   if (S.planningAhead === 'ahead') {
-    if (res && res.required) s += 5;           // Showcase the best reservation spots
+    if (res && res.required) s += 5;
     if (res && res.bookUrl) s += 2;
   }
 
-  // Area filter — use country-specific area sets
-  const cc = COUNTRY_CONFIG[S.country] || COUNTRY_CONFIG.my;
   let areaSet = null;
   if (S.mealType === 'lunch'  && S.areaFilter) areaSet = cc.lunchAreaSets[S.areaFilter];
   if (S.mealType === 'dinner' && S.areaFilter) areaSet = cc.dinnerAreaSets[S.areaFilter];
-  if (areaSet && !areaSet.has(r.area)) return -1;
+  if (areaSet && !areaSet.has(r.area)) {
+    if (beyondRelaxedRadius(r, cc))
+      return { r, s: -1, hardFail: true, disclaimers, tier };
+    const leg = r.driveMin != null ? `~${r.driveMin} min drive` : (r.walkMin != null ? `~${r.walkMin} min walk` : 'a bit farther');
+    disclaimers.push(`Outside your selected area (${leg}) — still inside a typical GrabFood radius from ${office}. Allow extra travel time, or order ahead in the app for a smoother handoff.`);
+    s -= 30;
+  } else {
+    tier.area = 1;
+  }
 
-  // Hard dietary stops
-  if (S.dietary.includes('halal') && !r.halal) return -1;
-  if (S.dietary.includes('no-pork') && !r.halal) return -1;
-  if (S.dietary.includes('vegetarian') && !r.veg) return -1;
-  if (S.dietary.includes('vegan') && !r.vegan) return -1;
-  if (S.dietary.includes('no-beef') && !r.noBeef) return -1;
-  // Kosher: no certified Kosher in KL — proxy to vegetarian/vegan as practical alternative
-  if (S.dietary.includes('kosher') && !r.veg && !r.vegan) return -1;
-  // Gluten-free: soft signal (not hard exclude — cross-contamination risk remains; user warned separately)
+  if (S.dietary.includes('halal') && !r.halal) return { r, s: -1, hardFail: true, disclaimers, tier };
+  if (S.dietary.includes('no-pork') && !r.halal) return { r, s: -1, hardFail: true, disclaimers, tier };
+  if (S.dietary.includes('vegetarian') && !r.veg) return { r, s: -1, hardFail: true, disclaimers, tier };
+  if (S.dietary.includes('vegan') && !r.vegan) return { r, s: -1, hardFail: true, disclaimers, tier };
+  if (S.dietary.includes('no-beef') && !r.noBeef) return { r, s: -1, hardFail: true, disclaimers, tier };
+  if (S.dietary.includes('kosher') && !r.veg && !r.vegan) return { r, s: -1, hardFail: true, disclaimers, tier };
   if (S.dietary.includes('gluten-free') && !r.gfFriendly) s -= 10;
+  tier.dietary = 1;
+  if (S.dietary.includes('gluten-free') && !r.gfFriendly) tier.dietary = 0;
 
-  // Group size
-  if (S.groupSize >= 9 && r.capacity === 'small') return -1;
+  if (S.groupSize >= 9 && r.capacity === 'small') return { r, s: -1, hardFail: true, disclaimers, tier };
 
-  // Rating bonus (PH: allow 3.0+ discovery tier per local guidance)
   if (S.country === 'ph') {
-    if (r.googleRating < 3.0) return -1;
+    if (r.googleRating < 3.0) return { r, s: -1, hardFail: true, disclaimers, tier };
     if (r.googleRating >= 4.5) s += 10;
     else if (r.googleRating >= 4.0) s += 6;
     else if (r.googleRating >= 3.5) s += 2;
@@ -1817,86 +2022,71 @@ function score(r) {
     else s -= 5;
   }
 
-  // Trending bonus
   s += r.trending.length * 2;
 
-  // Time
   if (S.time === 'rushed') {
-    if (r.waitPeak === 'slow') return -1;
-    if (S.country === 'th') {
-      // Bangkok: BTS/MRT + short taxi is the norm — allow up to 20 min walk or 15 min drive
-      if (r.driveMin && r.driveMin > 15) return -1;
-      if (!r.driveMin && r.walkMin > 20) return -1;
+    let strictFail = false;
+    if (r.waitPeak === 'slow') strictFail = true;
+    else if (S.country === 'th') {
+      if (r.driveMin && r.driveMin > 15) strictFail = true;
+      if (!r.driveMin && r.walkMin > 20) strictFail = true;
     } else if (S.country === 'ph') {
-      if (r.driveMin && r.driveMin > 10) return -1;
-      if (!r.driveMin && r.walkMin > 5) return -1;
+      if (r.driveMin && r.driveMin > 10) strictFail = true;
+      if (!r.driveMin && r.walkMin > 5) strictFail = true;
     } else {
-      // Malaysia: office-area walk-in only
-      if (r.driveMin) return -1;
-      if (r.walkMin > 12) return -1;
+      if (r.driveMin) strictFail = true;
+      if (r.walkMin > 12) strictFail = true;
+    }
+    if (strictFail) {
+      if (beyondRelaxedRadius(r, cc))
+        return { r, s: -1, hardFail: true, disclaimers, tier };
+      const leg = r.driveMin != null ? `${r.driveMin} min drive` : (r.walkMin != null ? `${r.walkMin} min walk` : 'extra travel');
+      const slowNote = r.waitPeak === 'slow' ? 'This spot runs a slower kitchen at peak — ' : '';
+      disclaimers.push(`${slowNote}Tighter than your “rushed” pick (${leg}). Easiest fix: order on GrabFood 20–30 min ahead for pickup or delivery to ${office} so food lands when you need it.`);
+      s -= 22;
+    } else {
+      tier.time = 1;
     }
     if (r.waitPeak === 'fast') s += 8;
-    if (PEAK.level === 'red' && r.waitPeak === 'moderate') s -= 3;
+    if (pk.level === 'red' && r.waitPeak === 'moderate') s -= 3;
+  } else {
+    tier.time = 1;
   }
+
   if (S.time === 'normal' && r.waitPeak === 'slow') s -= 4;
   if (S.time === 'relaxed') s += 2;
 
-  // Budget — country-aware thresholds
   const caps = S.mealType === 'dinner' ? cc.dinnerBudgetCaps : cc.budgetCaps;
-  if (S.budget === 'low'    && r.priceNum > caps.low)        return -1;
-  if (S.budget === 'mid'    && r.priceNum > caps.mid)        return -1;
-  if (S.budget === 'high'   && r.priceNum > caps.high)       s -= 3;
-  if (S.budget === 'splurge'&& r.priceNum > caps.high * 2)   s += 8;
+  if (S.budget === 'low'    && r.priceNum > caps.low)    return { r, s: -1, hardFail: true, disclaimers, tier };
+  if (S.budget === 'mid'    && r.priceNum > caps.mid)    return { r, s: -1, hardFail: true, disclaimers, tier };
+  if (S.budget === 'high'   && r.priceNum > caps.high)   s -= 3;
+  if (S.budget === 'splurge'&& r.priceNum > caps.high * 2) s += 8;
   if (S.budget === 'low'    && r.priceNum <= caps.low * 0.6) s += 6;
+  tier.budget = 1;
 
-  // Occasion
   if (r.bestFor.includes(S.occasion)) s += 8;
 
-  // Craving — match gives a strong boost, mismatch gives a penalty
-  // 'light' uses the healthFriendly flag rather than cuisine keywords
+  const cm = cravingCuisineMatch(r);
   if (S.craving === 'light') {
-    if (r.healthy) s += 12;
-    else s -= 8;
+    if (r.healthy) { s += 14; tier.craving = 1; }
+    else { s -= 8; tier.craving = 0; }
+  } else if (cm.matched && cm.strength === 'strong') {
+    s += 22;
+    tier.craving = 1;
   } else {
-    const cMap = {
-      malaysian:     ['Malaysian','Kopitiam','Nyonya','Peranakan','Ipoh','Malay'],
-      localfood:     ['Filipino','Local','Convenience','Carinderia'],
-      fastfood:      ['Fast Food'],
-      americanfood:  ['American'],
-      pasta:         ['Pasta','Italian'],
-      thai:          ['Thai','Food Court','Sukiyaki','Street Food','Royal Thai','Hawker'],
-      esarn:         ['Northeastern','E-sarn','Isaan'],
-      thaifinedining:['Modern Thai','Royal Thai','Southern Thai'],
-      rooftop:       ['Rooftop'],
-      japanese:      ['Japanese','Ramen','Mazesoba','Sushi','Omakase','Wagyu','Izakaya'],
-      western:       ['Western','BBQ','French','American','Spanish','Bistro','Tapas','Café','Italian','Neapolitan'],
-      chinese:       ['Chinese','Taiwanese','Dim Sum','Fujian','Hotpot','Sukiyaki'],
-      korean:        ['Korean'],
-      latin:         ['Latin','Peruvian'],
-      bold:          ['Thai','Korean','Peri-Peri','Nashville','Wagyu','BBQ','Hotpot'],
-      any:           [],
-    };
-    const keys = cMap[S.craving]||[];
-    if (!keys.length) s += 2; // 'any' — no preference, small nudge
-    else if (keys.some(k => r.cuisine.toLowerCase().includes(k.toLowerCase()))) s += 12;
-    else s -= 30; // Strong mismatch — craving is an explicit user choice, not a soft preference
+    s -= 14;
+    tier.craving = 0;
   }
 
-  // Vibe
   if (S.vibe !== 'any') {
     if (S.vibe === 'chill' && r.vibe === 'chill') s += 5;
     if (S.vibe === 'chill' && r.vibe === 'loud') s -= 5;
     if (S.vibe === 'moderate' && r.vibe !== 'loud') s += 2;
   }
-
-  // Group
   if (S.groupSize >= 6 && r.capacity === 'large') s += 4;
   if (S.groupSize >= 6 && r.capacity === 'small') s -= 5;
+  if (pk.level === 'red' && r.waitPeak === 'slow') s -= 6;
 
-  // Peak time penalty
-  if (PEAK.level === 'red' && r.waitPeak === 'slow') s -= 6;
-
-  // Rejection adjustments (budget thresholds follow each country's caps)
   const capMidRef = S.mealType === 'dinner' ? cc.dinnerBudgetCaps.mid : cc.budgetCaps.mid;
   const farMin = S.country === 'ph' ? 35 : 15;
   if (S.rejections.includes('too-far') && r.driveMin && r.driveMin > farMin) s -= 12;
@@ -1905,27 +2095,44 @@ function score(r) {
   if (S.rejections.includes('too-quiet') && r.vibe === 'chill') s -= 10;
   if (S.rejections.includes('want-cheaper') && r.priceNum > capMidRef * 0.55) s -= 10;
   if (S.rejections.includes('different-cuisine')) {
-    // Use the full cross-round cuisine history, and escalate penalty on repeat requests
     const diffCount = S.rejections.filter(v => v === 'different-cuisine').length;
     if (S.shownCuisines.some(c => r.cuisine.toLowerCase().startsWith(c))) {
       s -= diffCount >= 2 ? 40 : 20;
     }
   }
-  // Use accumulated all-time history — prevents restaurants resurfacing after earlier rounds
   if (S.shown.includes(r.id)) s -= 50;
-  if (S.excluded.includes(r.id)) return -1;
+  if (S.excluded.includes(r.id)) return { r, s: -1, hardFail: true, disclaimers, tier };
 
-  // Proximity bonus
   if (r.walkMin && r.walkMin <= 3) s += 5;
   if (r.driveMin && r.driveMin <= 5) s += 3;
 
-  return s;
+  return { r, s, hardFail: false, disclaimers, tier };
+}
+
+function pickSortKey(ev) {
+  const t = ev.tier;
+  return t.craving * 120 + t.dietary * 100 + t.budget * 50 + t.area * 40 + t.time * 40 + ev.s;
+}
+
+function score(r) {
+  const ev = evaluatePick(r);
+  return ev.hardFail ? -1 : ev.s;
 }
 
 function getSuggestions(grabOnly=false) {
-  let pool = grabOnly ? DB.filter(r=>r.grab) : DB;
-  return pool.map(r=>({r,s:score(r)})).filter(x=>x.s>0)
-    .sort((a,b)=>b.s-a.s).slice(0,5).map(x=>x.r);
+  S._pickDisclaimers = {};
+  const pool = grabOnly ? DB.filter(r => r.grab) : DB;
+  const rows = pool.map(r => evaluatePick(r)).filter(x => !x.hardFail && x.s > 0);
+  rows.sort((a, b) => {
+    const ka = pickSortKey(a), kb = pickSortKey(b);
+    if (kb !== ka) return kb - ka;
+    return b.s - a.s;
+  });
+  const top = rows.slice(0, 5);
+  top.forEach(ev => {
+    if (ev.disclaimers.length) S._pickDisclaimers[ev.r.id] = ev.disclaimers;
+  });
+  return top.map(ev => ev.r);
 }
 
 // ─── Grab delivery UI ─────────────────────────────────────────────────────────
@@ -1996,8 +2203,8 @@ function buildReasons(r) {
     } else {
       const cMap = {
         malaysian:['Malaysian','Kopitiam','Nyonya','Peranakan','Ipoh','Malay'],
-        localfood:['Filipino','Local','Convenience','Carinderia'],
-        fastfood:['Fast Food'],
+        localfood:['Carinderia'],
+        fastfood:['Fast Food','Convenience','Convenience Store'],
         americanfood:['American'],
         pasta:['Pasta','Italian'],
         japanese:['Japanese','Ramen','Mazesoba','Sushi','Omakase','Wagyu','Izakaya'],
@@ -2011,8 +2218,11 @@ function buildReasons(r) {
         rooftop:['Rooftop'],
       };
       const keys = cMap[S.craving] || [];
-      if (keys.some(k => r.cuisine.toLowerCase().includes(k.toLowerCase())) && labels[S.craving])
+      if (S.craving === 'localfood' && S.country === 'ph') {
+        if (authenticFilipinoCuisine(r.cuisine)) tags.push(labels.localfood);
+      } else if (keys.some(k => r.cuisine.toLowerCase().includes(k.toLowerCase())) && labels[S.craving]) {
         tags.push(labels[S.craving]);
+      }
     }
   }
 
@@ -2074,7 +2284,8 @@ function buildCard(r, isDinner=false) {
     google:'<span class="sb wongnai" style="background:#4285F4">Google Maps</span>',
   }[t]||'')).join('');
 
-  const isWarnPeak = PEAK.level==='red' && (r.pt||'').includes('🔴');
+  const pk = getPeak(S.mealType || null, S.country || null);
+  const isWarnPeak = pk.level==='red' && (r.pt||'').includes('🔴');
   const ptClass = isWarnPeak ? 'rc-pt warn' : 'rc-pt';
   const ptText = isWarnPeak
     ? `⚠️ NOW BUSY: ${(r.pt||'').replace('🔴','').trim()}`
@@ -2104,6 +2315,13 @@ function buildCard(r, isDinner=false) {
     ? `<div class="why-picks"><div class="why-label">${t('Why this pick','ทำไมถึงแนะนำ')}</div><div>${reasons.map(tag=>`<span class="why-tag">${tag}</span>`).join('')}</div></div>`
     : '';
 
+  const discList = (S._pickDisclaimers && S._pickDisclaimers[r.id]) || [];
+  const discHtml = discList.length
+    ? `<div style="background:#fff8e6;border:1.5px solid #ffc966;border-radius:10px;padding:8px 11px;margin-top:8px;font-size:11.5px;line-height:1.5;color:#6a4a00">
+      <strong>⏱ Heads-up:</strong><br>${discList.map(d => `• ${d}`).join('<br>')}
+    </div>`
+    : '';
+
   const menuMeta = getMenuLink(r.id);
   const menuBtn = menuMeta
     ? `<a href="${menuMeta.url}" target="_blank" title="${menuMeta.title}" style="display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:var(--g);text-decoration:none;padding:4px 10px;border:1.5px solid var(--g);border-radius:20px;transition:all .15s" onmouseover="this.style.background='#e6f7ee'" onmouseout="this.style.background='transparent'">${menuMeta.label}</a>`
@@ -2128,6 +2346,7 @@ function buildCard(r, isDinner=false) {
         <div class="rc-meta">${r.cuisine} · <span class="pl ar" style="display:inline;padding:1px 6px">${r.areaLabel}</span></div>
         <div class="rc-desc">${r.desc}</div>
         ${whyHtml}
+        ${discHtml}
         ${r.deal ? `<div class="rc-deal">🏷️ ${r.deal}</div>` : ''}
         ${r.pt ? `<div class="${ptClass}">${ptText}</div>` : ''}
         <div class="pills">
@@ -2406,6 +2625,7 @@ window.pickMeal = async function(val) {
   };
   addMsg(labels[val],'user'); qrEl.innerHTML='';
   S.mealType = val; S.step = 'mealType';
+  refreshPeakUI();
   await advance();
 };
 
@@ -2583,8 +2803,26 @@ async function showResults() {
     `นี่คือตัวเลือกที่ดีที่สุด${occLabel} — ทุกร้านได้ <strong>⭐ 4.0+ บน ${ratingNote}</strong> ${isDinner?'🌙':'☀️'}`
   ), 700);
 
-  if (PEAK.level !== 'green') {
-    await botSay(`<strong>${PEAK.label}</strong> — ${PEAK.note}`, 450);
+  const peakMsg = getPeak(S.mealType || null, S.country || null);
+  if (peakMsg.level !== 'green') {
+    const areaSuf = peakAreaSuffix(S.country, S.areaFilter);
+    await botSay(`<strong>${peakMsg.label}</strong> — ${peakMsg.note}${areaSuf}`, 450);
+  }
+
+  if (res.length > 1) {
+    await botSay(t(
+      '<strong>How we ranked these:</strong> best match on <strong>cuisine + dietary</strong> first, then budget, then how well area & time fit your answers.',
+      '<strong>เราจัดอันดับอย่างไร:</strong> เน้นประเภทอาหารและข้อจำกัดด้านอาหารก่อน แล้วจึงเป็นงบ จากนั้นเป็นพื้นที่และเวลา'
+    ), 500);
+  }
+
+  const anyStretch = res.some(r => S._pickDisclaimers && S._pickDisclaimers[r.id] && S._pickDisclaimers[r.id].length);
+  if (anyStretch) {
+    const plat = (cc.deliveryPlatform || 'GrabFood').split('/')[0].trim();
+    await botSay(t(
+      `A few cards stretch your area or time — see the <strong>Heads-up</strong> notes. When that happens, <strong>ordering ${plat} 20–30 minutes ahead</strong> is usually faster than walking in cold.`,
+      `บางร้านอาจเกินพื้นที่หรือเวลาที่เลือก — ดูหมายเหตุบนบัตร แนะนำสั่ง ${plat} ล่วงหน้า 20–30 นาทีจะไวกว่า`
+    ), 650);
   }
 
   for (const r of res) {
@@ -2697,11 +2935,11 @@ inpEl.addEventListener('keydown',e=>{ if(e.key==='Enter') handleSend(); });
 function resetChat() {
   const prevLang = S && S.lang ? S.lang : 'en';
   S={step:'country',country:null,lang:prevLang,occasion:null,mealType:null,planningAhead:null,areaFilter:null,groupSize:null,time:null,dietary:[],craving:null,budget:null,vibe:null,last:[],shown:[],shownCuisines:[],rejections:[],excluded:[]};
-  chatEl.innerHTML=''; qrEl.innerHTML=''; updateLangToggle(); startChat();
+  chatEl.innerHTML=''; qrEl.innerHTML=''; updateLangToggle(); refreshPeakUI(); startChat();
 }
 
 async function startChat() {
-  await botSay(`Hey! 👋 I know the best spots near every Grab office.<br><br>Which office are you at?`, 700);
+  await botSay(`Hey! 👋 I shortlist restaurants using <strong>Google Maps</strong> (⭐ ratings & review volume) as the baseline, then layer in TikTok / Instagram buzz and local guides where we track them — all matched to each Grab office.<br><br>Which office are you at?`, 750);
   S.step = 'country';
   const tabsEl = document.createElement('div');
   tabsEl.className = 'city-tabs';
@@ -2742,6 +2980,7 @@ window.pickCountry = async function(code) {
   const subEl = document.querySelector('.hdr-info p');
   if (subEl) subEl.textContent = `${cc.flag} ${cc.name} · ${cc.office}`;
   updateLangToggle();
+  refreshPeakUI();
   if (code === 'th') {
     await askLanguage();
   } else {
@@ -2756,7 +2995,7 @@ async function askOccasion() {
   }
   const hooksArr = (S.country === 'th' && S.lang === 'th' && cc.hooksTH) ? cc.hooksTH : cc.hooks;
   const hook = hooksArr[new Date().getDay() % hooksArr.length];
-  await botSay(`${hook}<br><br>${PEAK.level!=='green'?`<span style="font-weight:600">${PEAK.label}</span> — ${PEAK.note}<br><br>`:''}${t("What's the occasion today?","วันนี้มาทานกับใคร?")}`, 700);
+  await botSay(`${hook}<br><br>${t("What's the occasion today?","วันนี้มาทานกับใคร?")}`, 700);
   S.step = 'occasion';
   setQR(t(
     [{l:"🌍 Hosting overseas guests",v:"overseas-guests"},{l:"👥 Team lunch / outing",v:"team-outing"},{l:"🍜 Personal lunch / dinner",v:"daily-lunch"}],
