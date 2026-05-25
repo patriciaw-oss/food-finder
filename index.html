@@ -748,6 +748,128 @@ const DB_TH = [
 // Merge Thailand DB into main DB
 DB.push(...DB_TH);
 
+// ════ Philippines — Exquadra Tower, Ortigas (Grab PH) ═══════════════════════
+const DB_PH = [
+  {id:59,city:'philippines',name:'Lawson',loc:'Exchange Rd / Jade St vicinity, Ortigas (near Exquadra)',
+   area:'exquadra-doorstep',areaLabel:'Exquadra doorstep',
+   cuisine:'Convenience Store',walkMin:2,driveMin:null,priceRange:'₱50–180',priceNum:90,
+   googleRating:4.1,reviews:'150+',vibe:'chill',capacity:'small',waitPeak:'fast',
+   halal:false,veg:true,grab:true,
+   bestFor:['daily-lunch','team-outing','overseas-guests'],mealTypes:['lunch','dinner'],
+   desc:'Japanese-style convenience — onigiri, sandwiches, hot snacks, drinks. Typical go-to when you only have 1–2 minutes from the office.',
+   pt:'≈1–2 min walk from Exquadra Tower',deal:'GrabFood from nearby branch when you cannot step out',
+   trending:['tiktok','instagram','google']},
+  {id:60,city:'philippines',name:"Uncle John's",loc:'Ortigas Center, near Exquadra / Exchange Rd',
+   area:'exquadra-doorstep',areaLabel:'Exquadra doorstep',
+   cuisine:'Filipino Convenience',walkMin:2,driveMin:null,priceRange:'₱40–150',priceNum:80,
+   googleRating:4.0,reviews:'200+',vibe:'chill',capacity:'small',waitPeak:'fast',
+   halal:false,veg:false,grab:true,
+   bestFor:['daily-lunch','team-outing'],mealTypes:['lunch','dinner'],
+   desc:'Local convenience chain — silog meals, hot dogs, fried chicken, rice bowls. Same “super close” tier as Lawson for quick team runs.',
+   pt:'≈1–2 min walk from the tower',deal:null,
+   trending:['google','instagram','tiktok']},
+  {id:61,city:'philippines',name:'Jollibee (Ortigas ring)',loc:'Ortigas Center — multiple branches within a few minutes’ drive',
+   area:'ortigas-fast-ring',areaLabel:'Ortigas (short drive)',
+   cuisine:'Filipino Fast Food',walkMin:null,driveMin:6,priceRange:'₱120–280',priceNum:200,
+   googleRating:4.3,reviews:'5,000+',vibe:'moderate',capacity:'large',waitPeak:'moderate',
+   halal:false,veg:false,grab:true,
+   bestFor:['team-outing','daily-lunch','overseas-guests'],mealTypes:['lunch','dinner'],
+   desc:'The national comfort-food stop — Chickenjoy, Jolly Spaghetti, burgers. Plan ~5–7 minutes by car from Exquadra depending on traffic.',
+   pt:'Peak 12–1 PM — drive or Grab may spike; branch-specific halal signage varies by mall',deal:'Often on GrabFood promos',
+   trending:['tiktok','instagram','google']},
+  {id:62,city:'philippines',name:"McDonald's (Ortigas ring)",loc:'Ortigas Center — nearest drive-thru / mall branches',
+   area:'ortigas-fast-ring',areaLabel:'Ortigas (short drive)',
+   cuisine:'American Fast Food',walkMin:null,driveMin:5,priceRange:'₱100–250',priceNum:180,
+   googleRating:4.2,reviews:'8,000+',vibe:'moderate',capacity:'large',waitPeak:'fast',
+   halal:false,veg:true,grab:true,
+   bestFor:['daily-lunch','team-outing','overseas-guests'],mealTypes:['lunch','dinner'],
+   desc:'Predictable McDo run — breakfast menu, McCrispy, fries. Same 5–7 minute driving band as other fast-food clusters around the office.',
+   pt:'Drive-thru lines can stack at lunch — mobile order when possible',deal:null,
+   trending:['google','instagram']},
+  {id:63,city:'philippines',name:'KFC (Ortigas ring)',loc:'Ortigas Center — SM Megamall / nearby blocks',
+   area:'ortigas-fast-ring',areaLabel:'Ortigas (short drive)',
+   cuisine:'American Fast Food',walkMin:null,driveMin:7,priceRange:'₱130–300',priceNum:220,
+   googleRating:4.1,reviews:'4,000+',vibe:'moderate',capacity:'large',waitPeak:'moderate',
+   halal:false,veg:false,grab:true,
+   bestFor:['team-outing','daily-lunch'],mealTypes:['lunch','dinner'],
+   desc:'Fried chicken buckets and rice meals — easy crowd-pleaser for mixed teams. Budget sits in the casual ₱150–300 lunch band.',
+   pt:'≈5–7 min drive in normal traffic — pad for Ortigas lunch rush',deal:'Check Grab bundle deals',
+   trending:['google','tiktok']},
+  {id:64,city:'philippines',name:'Starbucks (Ortigas walk)',loc:'Ground retail around Exquadra / Exchange Rd',
+   area:'exquadra-doorstep',areaLabel:'Exquadra doorstep',
+   cuisine:'Coffee / Light meals',walkMin:3,driveMin:null,priceRange:'₱150–350',priceNum:220,
+   googleRating:4.4,reviews:'1,000+',vibe:'chill',capacity:'medium',waitPeak:'moderate',
+   halal:false,veg:true,grab:true,
+   bestFor:['daily-lunch','team-outing','overseas-guests'],mealTypes:['lunch','dinner'],
+   desc:'Team default for coffee meetings — pastries, sandwiches, and seasonal drinks without leaving the block.',
+   pt:'Often visible on Instagram stories for seasonal drops',deal:'Stars / card promos vary',
+   trending:['instagram','google','tiktok']},
+  {id:65,city:'philippines',name:'Zeus Specialty Coffee',loc:'Jade St / Exchange Rd corridor (Ortigas)',
+   area:'exquadra-doorstep',areaLabel:'Exquadra doorstep',
+   cuisine:'Specialty Coffee',walkMin:2,driveMin:null,priceRange:'₱140–320',priceNum:200,
+   googleRating:4.5,reviews:'300+',vibe:'chill',capacity:'small',waitPeak:'fast',
+   halal:false,veg:true,grab:false,
+   bestFor:['daily-lunch','team-outing'],mealTypes:['lunch','dinner'],
+   desc:'Local specialty-coffee favourite for Grabbers who want something closer than a mall run — espresso flights, pour-over, small pastries.',
+   pt:'Treat as same “minutes from the office” tier as Lawson / Uncle John’s',deal:null,
+   trending:['instagram','tiktok','google']},
+  {id:66,city:'philippines',name:'Manam',loc:'Net Park, 5th Ave, BGC / SM Megamall (Ortigas)',
+   area:'ortigas-core',areaLabel:'Ortigas core / malls',
+   cuisine:'Filipino Modern',walkMin:null,driveMin:12,priceRange:'₱350–700',priceNum:500,
+   googleRating:4.6,reviews:'3,000+',vibe:'moderate',capacity:'medium',waitPeak:'moderate',
+   halal:false,veg:true,grab:true,
+   bestFor:['overseas-guests','team-outing'],mealTypes:['lunch','dinner'],
+   desc:'Modern Filipino classics sized for sharing — sisig, sinigang, crispy pancit canton. Great “introduce the Philippines” dinner when you open up beyond walking distance.',
+   pt:'Book on weekends — Ortigas & BGC branches both draw office crowds',deal:null,
+   trending:['instagram','google','tiktok']},
+  {id:67,city:'philippines',name:'Crystal Jade Dining IN',loc:'SM Megamall, Ortigas',
+   area:'ortigas-core',areaLabel:'SM Megamall',
+   cuisine:'Chinese / Dim Sum',walkMin:null,driveMin:10,priceRange:'₱400–900',priceNum:550,
+   googleRating:4.4,reviews:'800+',vibe:'chill',capacity:'large',waitPeak:'moderate',
+   halal:false,veg:true,grab:false,
+   bestFor:['overseas-guests','team-outing'],mealTypes:['lunch','dinner'],
+   desc:'Polished Cantonese dining and dim sum inside Megamall — easy sell for guests who want Chinese food without crossing the whole metro.',
+   pt:'Lunch sets weekdays — dim sum carts busiest Sat–Sun lunch',deal:null,
+   trending:['google','instagram']},
+  {id:68,city:'philippines',name:'Wildflour Restaurant + Bakery',loc:'Net Lima, BGC (longer drive from Ortigas)',
+   area:'bgc',areaLabel:'BGC',
+   cuisine:'American / Pasta / Brunch',walkMin:null,driveMin:25,priceRange:'₱600–1,400',priceNum:900,
+   googleRating:4.5,reviews:'2,500+',vibe:'chill',capacity:'medium',waitPeak:'moderate',
+   halal:false,veg:true,grab:true,
+   bestFor:['overseas-guests','team-outing'],mealTypes:['lunch','dinner'],
+   desc:'Manila brunch institution — pastas, steaks, bakery counter. Use when dinner budget opens past the ₱300 casual band and the team is okay with a BGC run.',
+   pt:'Friday dinner traffic Ortigas ↔ BGC can add 15+ minutes — leave early',deal:null,
+   trending:['instagram','tiktok','google']},
+  {id:69,city:'philippines',name:'Sariwon Korean BBQ',loc:'Fort Strip, BGC',
+   area:'bgc',areaLabel:'BGC',
+   cuisine:'Korean BBQ',walkMin:null,driveMin:28,priceRange:'₱800–1,500',priceNum:1000,
+   googleRating:4.5,reviews:'600+',vibe:'loud',capacity:'medium',waitPeak:'moderate',
+   halal:false,veg:false,grab:false,
+   bestFor:['team-outing','overseas-guests'],mealTypes:['dinner'],
+   desc:'Premium K-BBQ with marble beef sets — fits the “open map + higher budget” dinner night when the team wants smoke, soju, and energy.',
+   pt:'Reservation recommended Thu–Sat',deal:null,
+   trending:['tiktok','instagram','google']},
+  {id:70,city:'philippines',name:'Your Local',loc:'Tordesillas, Makati',
+   area:'makati',areaLabel:'Makati',
+   cuisine:'Filipino Fusion',walkMin:null,driveMin:22,priceRange:'₱500–1,000',priceNum:700,
+   googleRating:4.3,reviews:'400+',vibe:'chill',capacity:'medium',waitPeak:'moderate',
+   halal:false,veg:true,grab:false,
+   bestFor:['overseas-guests','team-outing'],mealTypes:['dinner'],
+   desc:'Contemporary Filipino plates with cocktail program — good middle ground between purely local carinderia food and international fine dining.',
+   pt:'Makati parking + ride combo is easiest for groups',deal:null,
+   trending:['instagram','google']},
+  {id:71,city:'philippines',name:'Persia Grill',loc:'SM Megamall, Ortigas',
+   area:'ortigas-core',areaLabel:'SM Megamall',
+   cuisine:'Middle Eastern / Halal-friendly',walkMin:null,driveMin:10,priceRange:'₱250–650',priceNum:400,
+   googleRating:4.2,reviews:'900+',vibe:'moderate',capacity:'medium',waitPeak:'moderate',
+   halal:true,veg:true,grab:true,
+   bestFor:['team-outing','daily-lunch','overseas-guests'],mealTypes:['lunch','dinner'],
+   desc:'Persian grills, rice platters, and shawarma bowls — one of the dependable halal-friendly picks when Megamall is your anchor.',
+   pt:'Confirm prayer-room needs with the branch host — mall-level facilities vary',deal:null,
+   trending:['google','instagram']},
+];
+DB.push(...DB_PH);
+
 // ─── Extended dietary & health properties ─────────────────────────────────────
 // vegan: has real vegan options (no meat/dairy/eggs)
 // noBeef: can accommodate no-beef requests (false only for all-beef concepts)
@@ -811,8 +933,22 @@ const DIET_EXTRA = {
  54: {vegan:false, noBeef:true,  healthy:false, gfFriendly:true},  // Sorn (rice-based Southern Thai)
  55: {vegan:false, noBeef:true,  healthy:false, gfFriendly:false}, // Smokin' Pug (BBQ)
  56: {vegan:true,  noBeef:true,  healthy:false, gfFriendly:false}, // Eathai (curated Thai stalls)
- 57: {vegan:true,  noBeef:true,  healthy:false, gfFriendly:false}, // Blue Elephant (veg Royal Thai menu)
- 58: {vegan:false, noBeef:true,  healthy:false, gfFriendly:false}, // MK Restaurant (hotpot)
+  57: {vegan:true,  noBeef:true,  healthy:false, gfFriendly:false}, // Blue Elephant (veg Royal Thai menu)
+  58: {vegan:false, noBeef:true,  healthy:false, gfFriendly:false}, // MK Restaurant (hotpot)
+  // ── Philippines ──
+ 59: {vegan:true,  noBeef:true,  healthy:true,  gfFriendly:false}, // Lawson
+ 60: {vegan:false, noBeef:true,  healthy:false, gfFriendly:false}, // Uncle John's
+ 61: {vegan:false, noBeef:true,  healthy:false, gfFriendly:false}, // Jollibee
+ 62: {vegan:true,  noBeef:true,  healthy:false, gfFriendly:false}, // McDonald's
+ 63: {vegan:false, noBeef:true,  healthy:false, gfFriendly:false}, // KFC
+ 64: {vegan:true,  noBeef:true,  healthy:true,  gfFriendly:true},  // Starbucks
+ 65: {vegan:true,  noBeef:true,  healthy:true,  gfFriendly:true},  // Zeus
+ 66: {vegan:true,  noBeef:true,  healthy:false, gfFriendly:false}, // Manam
+ 67: {vegan:true,  noBeef:true,  healthy:false, gfFriendly:false}, // Crystal Jade
+ 68: {vegan:true,  noBeef:true,  healthy:false, gfFriendly:true},  // Wildflour
+ 69: {vegan:false, noBeef:true,  healthy:false, gfFriendly:false}, // Sariwon KBBQ
+ 70: {vegan:true,  noBeef:true,  healthy:true,  gfFriendly:false}, // Your Local
+ 71: {vegan:true,  noBeef:true,  healthy:false, gfFriendly:false}, // Persia Grill
 };
 DB.forEach(r => {
   const ex = DIET_EXTRA[r.id] || {};
@@ -851,6 +987,18 @@ const DINNER_AREA_SETS_TH = {
   'th-nearby':   new Set(['asoke','siam','ploenchit','silom','sathorn','phrom-phong']),
   'th-midrange': new Set(['asoke','siam','ploenchit','silom','sathorn','thonglor','ekamai','nana','phrom-phong','riverside']),
   'th-anywhere': new Set(['asoke','one-bangkok','lumpini','silom','sathorn','ploenchit','thonglor','ekamai','siam','nana','riverside','icon-siam','asiatique','phrom-phong']),
+};
+
+// ─── Philippines area sets (Exquadra Tower, Ortigas Center, Pasig) ───────────
+const LUNCH_AREA_SETS_PH = {
+  'ph-lunch-conv':     new Set(['exquadra-doorstep']),
+  'ph-lunch-fastfood': new Set(['ortigas-fast-ring']),
+  'ph-lunch-best':     new Set(['exquadra-doorstep','ortigas-fast-ring']),
+};
+const DINNER_AREA_SETS_PH = {
+  'ph-dinner-ortigas': new Set(['exquadra-doorstep','ortigas-fast-ring','ortigas-core']),
+  'ph-dinner-metro':   new Set(['exquadra-doorstep','ortigas-fast-ring','ortigas-core','bgc','makati']),
+  'ph-dinner-wide':    new Set(['exquadra-doorstep','ortigas-fast-ring','ortigas-core','bgc','makati','quezon-metro']),
 };
 
 // ─── Country config ───────────────────────────────────────────────────────────
@@ -992,8 +1140,70 @@ const COUNTRY_CONFIG = {
     mealTypeSubTH: {dinner:"ร้านอาหารทั่วกรุงเทพ", delivery:"สั่งถึงโต๊ะ"},
   },
   ph: {
-    name:'Philippines', flag:'🇵🇭', office:'BGC, Manila',
-    comingSoon: true,
+    name:'Philippines', flag:'🇵🇭', office:'Exquadra Tower, Ortigas Center, Pasig',
+    currency:'₱',
+    budgetCaps:       {low:149, mid:300, high:500},
+    dinnerBudgetCaps: {low:400, mid:800, high:1400},
+    lunchAreaSets:  LUNCH_AREA_SETS_PH,
+    dinnerAreaSets: DINNER_AREA_SETS_PH,
+    lunchAreaQR: [
+      {l:'🏪 Convenience — Lawson / Uncle John’s (1–2 min)', v:'ph-lunch-conv'},
+      {l:'🍔 Fast food — Jollibee / McDonald’s / KFC (5–7 min)', v:'ph-lunch-fastfood'},
+      {l:'🗺️ Best near Exquadra — mix walk + short drive', v:'ph-lunch-best'},
+    ],
+    dinnerAreaQR: [
+      {l:'🏙️ Ortigas / Megamall ring — reasonable drive', v:'ph-dinner-ortigas'},
+      {l:'🌆 Open to BGC / Makati + Ortigas', v:'ph-dinner-metro'},
+      {l:'🌃 Anywhere sensible in Metro Manila', v:'ph-dinner-wide'},
+    ],
+    lunchAreaMsg:  'Lunch stays walkable or a very short drive from Exquadra — which band do you want?',
+    dinnerAreaMsg: 'Dinner can open up across the metro (and higher budgets). How far should we cast the net?',
+    deliveryPlatform:'GrabFood',
+    deliveryUrl:'https://food.grab.com/ph/en/',
+    deliveryOffice:'Exquadra Tower, Ortigas Center, Pasig City',
+    grabMsg:'Delivering to Exquadra Tower (Ortigas). Malls like Megamall are a short hop — any dietary needs?',
+    countryIntro:`<strong>🇵🇭 Grab Philippines — Exquadra Tower</strong><br><br>
+📍 <strong>Office</strong><br>
+Level 27F / 28F, <strong>Exquadra Tower</strong><br>
+Lot 1A Exchange Road corner Jade Street<br>
+Ortigas Center, Pasig City, Philippines<br><br>
+🍽️ <strong>How we pick lunch</strong> — walk or short drive only: convenience (Lawson, Uncle John’s ~1–2 min) and fast food (Jollibee, McDonald’s, KFC ~5–7 min).<br><br>
+🌙 <strong>Dinner</strong> — you can widen to Ortigas malls, BGC, Makati, and beyond; budget tiers go past the casual <strong>₱150–300</strong> band when you want a splurge.<br><br>
+🔎 <strong>Discovery</strong> — we weight <strong>TikTok</strong>, <strong>Google Maps</strong> (Business Profiles), and <strong>Instagram</strong>; many Manila spots post menus on Instagram as well as Google.<br><br>
+🥗 <strong>Dietary</strong> — tap halal, vegan, vegetarian, no pork, no beef, gluten-aware, or kosher (certified kosher dining is very limited — we’ll proxy thoughtfully). Categories we filter on include local Filipino, Chinese, fast food, American, pasta, and Korean.<br><br>
+✨ <strong>Grab team go-tos</strong> — Lawson · Uncle John’s · Starbucks · Zeus — because they’re minutes from the office.`,
+    hooks:[
+      `Ortigas lunch hour hits different when you’re 27 floors up. Let’s beat the elevator queue with a real plan. 😄`,
+      `Exchange Road ↔ Jade Street energy: everyone’s hungry, nobody wants to gamble on traffic. I’ve got you. 🚦`,
+      `Filipino flavours, Korean BBQ, or a 2-minute Lawson run — tell me the vibe and I’ll narrow it fast.`,
+      `When the group chat says “kahit ano,” that’s my cue. Let’s pick before hanger wins. 🇵🇭`,
+    ],
+    cravingLunch:[
+      {l:'🇵🇭 Local food',v:'localfood'},{l:'🥟 Chinese food',v:'chinese'},
+      {l:'🍟 Fast food',v:'fastfood'},{l:'🍔 American food',v:'americanfood'},
+      {l:'🍝 Pasta',v:'pasta'},{l:'🇰🇷 Korean food',v:'korean'},
+      {l:'✨ Surprise me',v:'any'},{l:'🔍 I want a specific dish…',v:'dish-search'},
+    ],
+    cravingDinner:[
+      {l:'🇵🇭 Filipino / local',v:'localfood'},{l:'🥟 Chinese',v:'chinese'},
+      {l:'🍟 Fast casual',v:'fastfood'},{l:'🍔 American / steaks',v:'americanfood'},
+      {l:'🍝 Pasta / Italian',v:'pasta'},{l:'🇰🇷 Korean BBQ / K-food',v:'korean'},
+      {l:'✨ Surprise me',v:'any'},{l:'🔍 I want a specific dish…',v:'dish-search'},
+    ],
+    cravingGrab:[
+      {l:'🇵🇭 Filipino',v:'localfood'},{l:'🥟 Chinese',v:'chinese'},{l:'🍟 Fast food',v:'fastfood'},
+      {l:'🍔 American',v:'americanfood'},{l:'🍝 Pasta',v:'pasta'},{l:'🇰🇷 Korean',v:'korean'},{l:'✨ Surprise me',v:'any'},
+    ],
+    budgetLunchQR: [
+      {l:'💰 Under ₱150',v:'low'},{l:'💳 ₱150–300',v:'mid'},{l:'💎 ₱300+',v:'high'},
+    ],
+    budgetDinnerQR: [
+      {l:'💳 ₱300–800 (casual+)',v:'mid'},{l:'💎 ₱800–1,500 (premium)',v:'high'},{l:'👑 ₱1,500+ (celebration)',v:'splurge'},
+    ],
+    budgetGrabQR: [
+      {l:'💰 Under ₱200',v:'low'},{l:'💳 ₱200–400',v:'mid'},{l:'💎 ₱400+',v:'high'},
+    ],
+    mealTypeSub: {dinner:'Wider Metro Manila (BGC, Makati, Ortigas…)', delivery:'Order to Exquadra'},
   },
 };
 
@@ -1269,6 +1479,33 @@ const MENUS = {
         google:'https://www.google.com/maps/search/Langkasuka+Ilham+Tower+KLCC' },
   35: { website:'https://www.bistrokiapeng.com/',
         google:'https://www.google.com/maps/search/Bistro+Kia+Peng+KLCC+Marriott+Kuala+Lumpur' },
+  // ── Philippines (Google Maps + Instagram common for menus) ──
+ 59: { google:'https://www.google.com/maps/search/Lawson+Ortigas+Exquadra+Pasig',
+        instagram:'https://www.instagram.com/explore/tags/lawsonphilippines/' },
+ 60: { google:'https://www.google.com/maps/search/Uncle+Johns+Ortigas+Pasig',
+        instagram:'https://www.instagram.com/explore/tags/unclejohns/' },
+ 61: { google:'https://www.google.com/maps/search/Jollibee+Ortigas+Center+Pasig',
+        instagram:'https://www.instagram.com/jollibee/' },
+ 62: { google:'https://www.google.com/maps/search/McDonalds+Ortigas+Center+Pasig',
+        website:'https://www.mcdonalds.com.ph/' },
+ 63: { google:'https://www.google.com/maps/search/KFC+SM+Megamall+Ortigas',
+        website:'https://www.kfc.com.ph/' },
+ 64: { google:'https://www.google.com/maps/search/Starbucks+Exchange+Road+Ortigas+Pasig',
+        instagram:'https://www.instagram.com/starbucksph/' },
+ 65: { google:'https://www.google.com/maps/search/Zeus+coffee+Ortigas+Pasig',
+        instagram:'https://www.instagram.com/explore/tags/zeuscoffee/' },
+ 66: { google:'https://www.google.com/maps/search/Manam+Net+Park+BGC+or+SM+Megamall',
+        instagram:'https://www.instagram.com/eatmanam/' },
+ 67: { google:'https://www.google.com/maps/search/Crystal+Jade+SM+Megamall',
+        website:'https://www.crystaljade.com/' },
+ 68: { google:'https://www.google.com/maps/search/Wildflour+BGC+Net+Lima',
+        instagram:'https://www.instagram.com/wildflourmanila/' },
+ 69: { google:'https://www.google.com/maps/search/Sariwon+Korean+BBQ+Fort+Strip+BGC',
+        instagram:'https://www.instagram.com/explore/tags/sariwon/' },
+ 70: { google:'https://www.google.com/maps/search/Your+Local+Tordesillas+Makati',
+        instagram:'https://www.instagram.com/yourlocalph/' },
+ 71: { google:'https://www.google.com/maps/search/Persia+Grill+SM+Megamall',
+        website:'https://persiagrill.com/' },
 };
 
 function getMenuLink(id) {
@@ -1366,6 +1603,20 @@ const HOURS = {
   33: {days:[0,1,2,3,4,5,6], open:18,   close:23},              // Restaurant Shu ⚠️ dinner only
   34: {days:[0,1,2,3,4,5,6], open:18,   close:23},              // Langkasuka (dinner-focused)
   35: {days:[0,1,2,3,4,5,6], open:12,   close:22},              // Bistro Kia Peng
+  // ── Philippines ──
+ 59: {days:[0,1,2,3,4,5,6], open:0,    close:24},              // Lawson (24h typical — verify branch)
+ 60: {days:[0,1,2,3,4,5,6], open:6,    close:23},              // Uncle John's
+ 61: {days:[0,1,2,3,4,5,6], open:6,    close:23},              // Jollibee
+ 62: {days:[0,1,2,3,4,5,6], open:6,    close:24},              // McDonald's
+ 63: {days:[0,1,2,3,4,5,6], open:10,   close:22},              // KFC
+ 64: {days:[0,1,2,3,4,5,6], open:6.5,  close:23},              // Starbucks
+ 65: {days:[0,1,2,3,4,5,6], open:7,    close:21},              // Zeus
+ 66: {days:[0,1,2,3,4,5,6], open:11,   close:22},              // Manam
+ 67: {days:[0,1,2,3,4,5,6], open:11,   close:22},              // Crystal Jade
+ 68: {days:[0,1,2,3,4,5,6], open:7,    close:22},              // Wildflour
+ 69: {days:[0,1,2,3,4,5,6], open:11,   close:23},              // Sariwon
+ 70: {days:[0,1,2,3,4,5,6], open:17,   close:23},              // Your Local (dinner-led)
+ 71: {days:[0,1,2,3,4,5,6], open:10,   close:22},              // Persia Grill
 };
 
 // ─── Reservation info ─────────────────────────────────────────────────────────
@@ -1500,7 +1751,7 @@ function score(r) {
   let s = 0;
 
   // Country filter — r.city undefined means Malaysia (legacy records)
-  const rCountry = r.city === 'thailand' ? 'th' : 'my';
+  const rCountry = r.city === 'thailand' ? 'th' : r.city === 'philippines' ? 'ph' : 'my';
   if (rCountry !== S.country) return -1;
 
   // Meal type match
@@ -1553,11 +1804,18 @@ function score(r) {
   // Group size
   if (S.groupSize >= 9 && r.capacity === 'small') return -1;
 
-  // Rating bonus
-  if (r.googleRating >= 4.5) s += 10;
-  else if (r.googleRating >= 4.2) s += 6;
-  else if (r.googleRating >= 4.0) s += 2;
-  else s -= 5;
+  // Rating bonus (PH: allow 3.0+ discovery tier per local guidance)
+  if (S.country === 'ph') {
+    if (r.googleRating < 3.0) return -1;
+    if (r.googleRating >= 4.5) s += 10;
+    else if (r.googleRating >= 4.0) s += 6;
+    else if (r.googleRating >= 3.5) s += 2;
+  } else {
+    if (r.googleRating >= 4.5) s += 10;
+    else if (r.googleRating >= 4.2) s += 6;
+    else if (r.googleRating >= 4.0) s += 2;
+    else s -= 5;
+  }
 
   // Trending bonus
   s += r.trending.length * 2;
@@ -1569,6 +1827,9 @@ function score(r) {
       // Bangkok: BTS/MRT + short taxi is the norm — allow up to 20 min walk or 15 min drive
       if (r.driveMin && r.driveMin > 15) return -1;
       if (!r.driveMin && r.walkMin > 20) return -1;
+    } else if (S.country === 'ph') {
+      if (r.driveMin && r.driveMin > 10) return -1;
+      if (!r.driveMin && r.walkMin > 5) return -1;
     } else {
       // Malaysia: office-area walk-in only
       if (r.driveMin) return -1;
@@ -1599,6 +1860,10 @@ function score(r) {
   } else {
     const cMap = {
       malaysian:     ['Malaysian','Kopitiam','Nyonya','Peranakan','Ipoh','Malay'],
+      localfood:     ['Filipino','Local','Convenience','Carinderia'],
+      fastfood:      ['Fast Food'],
+      americanfood:  ['American'],
+      pasta:         ['Pasta','Italian'],
       thai:          ['Thai','Food Court','Sukiyaki','Street Food','Royal Thai','Hawker'],
       esarn:         ['Northeastern','E-sarn','Isaan'],
       thaifinedining:['Modern Thai','Royal Thai','Southern Thai'],
@@ -1631,12 +1896,14 @@ function score(r) {
   // Peak time penalty
   if (PEAK.level === 'red' && r.waitPeak === 'slow') s -= 6;
 
-  // Rejection adjustments
-  if (S.rejections.includes('too-far') && r.driveMin > 15) s -= 12;
-  if (S.rejections.includes('too-expensive') && r.priceNum > 50) s -= 10;
+  // Rejection adjustments (budget thresholds follow each country's caps)
+  const capMidRef = S.mealType === 'dinner' ? cc.dinnerBudgetCaps.mid : cc.budgetCaps.mid;
+  const farMin = S.country === 'ph' ? 35 : 15;
+  if (S.rejections.includes('too-far') && r.driveMin && r.driveMin > farMin) s -= 12;
+  if (S.rejections.includes('too-expensive') && r.priceNum > capMidRef) s -= 10;
   if (S.rejections.includes('too-noisy') && r.vibe === 'loud') s -= 12;
   if (S.rejections.includes('too-quiet') && r.vibe === 'chill') s -= 10;
-  if (S.rejections.includes('want-cheaper') && r.priceNum > 30) s -= 10;
+  if (S.rejections.includes('want-cheaper') && r.priceNum > capMidRef * 0.55) s -= 10;
   if (S.rejections.includes('different-cuisine')) {
     // Use the full cross-round cuisine history, and escalate penalty on repeat requests
     const diffCount = S.rejections.filter(v => v === 'different-cuisine').length;
@@ -1713,6 +1980,7 @@ function buildReasons(r) {
       korean:'🌶️ Korean cuisine',bold:'🔥 Bold & flavourful',light:'🥗 Healthy & light',
       thai:'🇹🇭 Thai cuisine',esarn:'🌶️ E-Sarn flavours',thaifinedining:'👑 Thai fine dining',
       rooftop:'🌆 Rooftop dining',
+      localfood:'🇵🇭 Local Filipino',fastfood:'🍟 Fast food',americanfood:'🇺🇸 American',pasta:'🍝 Pasta / Italian',
     };
     const labelsTH = {
       malaysian:'🇲🇾 อาหารมาเลเซีย',japanese:'🍱 อาหารญี่ปุ่น',
@@ -1720,6 +1988,7 @@ function buildReasons(r) {
       korean:'🌶️ อาหารเกาหลี',bold:'🔥 รสจัด จัดเต็ม',light:'🥗 เบาๆ เพื่อสุขภาพ',
       thai:'🇹🇭 อาหารไทย',esarn:'🌶️ อาหารอีสาน',thaifinedining:'👑 ไฟน์ไดนิ่งไทย',
       rooftop:'🌆 บนดาดฟ้า',
+      localfood:'🇵🇭 Local Filipino',fastfood:'🍟 Fast food',americanfood:'🇺🇸 American',pasta:'🍝 Pasta / Italian',
     };
     const labels = t(labelsEN, labelsTH);
     if (S.craving === 'light') {
@@ -1727,6 +1996,10 @@ function buildReasons(r) {
     } else {
       const cMap = {
         malaysian:['Malaysian','Kopitiam','Nyonya','Peranakan','Ipoh','Malay'],
+        localfood:['Filipino','Local','Convenience','Carinderia'],
+        fastfood:['Fast Food'],
+        americanfood:['American'],
+        pasta:['Pasta','Italian'],
         japanese:['Japanese','Ramen','Mazesoba','Sushi','Omakase','Wagyu','Izakaya'],
         western:['Western','BBQ','French','American','Spanish','Bistro','Tapas','Café'],
         chinese:['Chinese','Taiwanese','Dim Sum','Fujian','Hotpot'],
@@ -1738,7 +2011,7 @@ function buildReasons(r) {
         rooftop:['Rooftop'],
       };
       const keys = cMap[S.craving] || [];
-      if (keys.some(k => r.cuisine.toLowerCase().includes(k.toLowerCase())))
+      if (keys.some(k => r.cuisine.toLowerCase().includes(k.toLowerCase())) && labels[S.craving])
         tags.push(labels[S.craving]);
     }
   }
@@ -1798,6 +2071,7 @@ function buildCard(r, isDinner=false) {
     instagram:'<span class="sb instagram">Instagram</span>',
     xhs:'<span class="sb xhs">小红书</span>',
     klfoodie:'<span class="sb klfoodie">KL Foodie</span>',
+    google:'<span class="sb wongnai" style="background:#4285F4">Google Maps</span>',
   }[t]||'')).join('');
 
   const isWarnPeak = PEAK.level==='red' && (r.pt||'').includes('🔴');
@@ -1898,7 +2172,10 @@ async function runDishSearch(query) {
   }
 
   const validIds = match.matches.map(m => m.id);
-  const candidates = DB.filter(r => validIds.includes(r.id));
+  const candidates = DB.filter(r => {
+    const rc = r.city === 'thailand' ? 'th' : r.city === 'philippines' ? 'ph' : 'my';
+    return validIds.includes(r.id) && rc === S.country;
+  });
 
   if (!candidates.length) {
     await botSay(t(
@@ -1974,12 +2251,16 @@ async function onQR(label,value) {
     addMsg(label,'user'); qrEl.innerHTML='';
     if (value === 'kosher') {
       await botSay(t(
-        "Noted. Heads up: <strong>certified Kosher restaurants are extremely rare in Klang Valley</strong> — there are essentially none. We'll surface strictly vegetarian and vegan-friendly options as the most practical alternative. Please confirm with your guest what they're comfortable with. 🙏",
+        S.country === 'ph'
+          ? "Noted. <strong>Certified kosher restaurants are extremely rare in Metro Manila</strong> — we’ll prioritise vegetarian / vegan-friendly picks and seafood-forward menus as practical alternatives. Please align with your guest on what they’re comfortable with. 🙏"
+          : "Noted. Heads up: <strong>certified Kosher restaurants are extremely rare in Klang Valley</strong> — there are essentially none. We'll surface strictly vegetarian and vegan-friendly options as the most practical alternative. Please confirm with your guest what they're comfortable with. 🙏",
         "รับทราบ ⚠️ <strong>ร้านอาหารที่ได้รับการรับรองโคเชอร์แทบไม่มีในกรุงเทพ</strong> — เราจะแนะนำตัวเลือกมังสวิรัติ/วีแกนแทน กรุณาตรวจสอบกับแขกของคุณด้วยนะคะ 🙏"
       ), 700);
     } else if (value === 'gluten-free') {
       await botSay(t(
-        "⚠️ <strong>Gluten hides in many Malaysian dishes</strong> — soy sauce, oyster sauce, wheat noodles, and marinades are everywhere. We'll prioritise the safest options, but please always confirm with the restaurant. Cross-contamination is a real risk in shared kitchens.",
+        S.country === 'ph'
+          ? "⚠️ <strong>Gluten hides in a lot of Filipino comfort food too</strong> — soy sauce, marinades, breaded fried chicken, and noodles. We’ll bias toward safer kitchens, but always double-check with staff. Shared fryers = real cross-contact risk."
+          : "⚠️ <strong>Gluten hides in many Malaysian dishes</strong> — soy sauce, oyster sauce, wheat noodles, and marinades are everywhere. We'll prioritise the safest options, but please always confirm with the restaurant. Cross-contamination is a real risk in shared kitchens.",
         "⚠️ <strong>กลูเตนซ่อนอยู่ในอาหารหลายอย่าง</strong> — ซีอิ๊ว น้ำมันหอย เส้นสาลี เราจะเลือกตัวเลือกที่ปลอดภัยที่สุด แต่กรุณายืนยันกับร้านด้วยนะคะ การปนเปื้อนข้ามยังเป็นความเสี่ยงในครัวทั่วไป"
       ), 700);
     } else {
@@ -2130,7 +2411,8 @@ window.pickMeal = async function(val) {
 
 async function askWalkIn() {
   const nowOpen = DB.filter(r => {
-    if ((r.city === 'thailand' ? 'th' : 'my') !== S.country) return false;
+    const rc = r.city === 'thailand' ? 'th' : r.city === 'philippines' ? 'ph' : 'my';
+    if (rc !== S.country) return false;
     const s = getOpenStatus(r.id);
     return s.status === 'closed' || s.status === 'not-yet';
   }).length;
@@ -2185,6 +2467,13 @@ window.pickArea = async function(val) {
     'th-nearby':        t('🏙️ Nearby (Asoke / Silom / Sathorn)','🏙️ ใกล้ (อโศก / สีลม / สาทร)'),
     'th-midrange':      t('🌆 Mid (Thonglor / Riverside / Nana)','🌆 กลาง (ทองหล่อ / ริเวอร์ไซด์ / นานา)'),
     'th-anywhere':      t('🌃 Anywhere in Bangkok','🌃 ทั่วกรุงเทพ'),
+    // Philippines
+    'ph-lunch-conv':     '🏪 Convenience — Lawson / Uncle John’s (1–2 min)',
+    'ph-lunch-fastfood': '🍔 Fast food — Jollibee / McDonald’s / KFC (5–7 min)',
+    'ph-lunch-best':     '🗺️ Best near Exquadra',
+    'ph-dinner-ortigas': '🏙️ Ortigas / Megamall ring',
+    'ph-dinner-metro':   '🌆 BGC / Makati + Ortigas',
+    'ph-dinner-wide':    '🌃 Metro Manila (sensible range)',
   };
   addMsg(allLabels[val]||val, 'user'); qrEl.innerHTML='';
   S.areaFilter = val; S.step = 'areaPreference';
@@ -2217,18 +2506,28 @@ async function askGrabCraving() {
   await botSay(t("What are you craving?","อยากกินอะไร?"), 500);
   const cc = COUNTRY_CONFIG[S.country] || COUNTRY_CONFIG.my;
   const isTH = S.country === 'th' && S.lang === 'th';
-  const qr = isTH
-    ? [{l:"🇹🇭 อาหารไทย",v:"thai"},{l:"🍜 ญี่ปุ่น",v:"japanese"},{l:"🥩 ตะวันตก",v:"western"},{l:"🌶️ รสจัด",v:"bold"},{l:"✨ เซอร์ไพรส์",v:"any"}]
-    : [{l:"🇲🇾 Malaysian",v:"malaysian"},{l:"🍜 Japanese",v:"japanese"},{l:"🥩 Western",v:"western"},{l:"🌶️ Bold & flavourful",v:"bold"},{l:"✨ Surprise me",v:"any"}];
+  let qr;
+  if (S.country === 'ph' && cc.cravingGrab) {
+    qr = cc.cravingGrab.map(x => ({...x, grab:true}));
+  } else if (isTH) {
+    qr = [{l:"🇹🇭 อาหารไทย",v:"thai",grab:true},{l:"🍜 ญี่ปุ่น",v:"japanese",grab:true},{l:"🥩 ตะวันตก",v:"western",grab:true},{l:"🌶️ รสจัด",v:"bold",grab:true},{l:"✨ เซอร์ไพรส์",v:"any",grab:true}];
+  } else {
+    qr = [{l:"🇲🇾 Malaysian",v:"malaysian",grab:true},{l:"🍜 Japanese",v:"japanese",grab:true},{l:"🥩 Western",v:"western",grab:true},{l:"🌶️ Bold & flavourful",v:"bold",grab:true},{l:"✨ Surprise me",v:"any",grab:true}];
+  }
   setQR(qr, true);
 }
 async function askGrabBudget() {
   const cc = COUNTRY_CONFIG[S.country] || COUNTRY_CONFIG.my;
   const isTH = S.country === 'th' && S.lang === 'th';
   await botSay(t("Budget per order?","งบประมาณต่อออร์เดอร์?"), 500);
-  const qr = isTH
-    ? [{l:"💰 <฿100",v:"low"},{l:"💳 ฿100–300",v:"mid"},{l:"💎 ฿300+",v:"high"}]
-    : [{l:"💰 Under RM20",v:"low"},{l:"💳 RM20–40",v:"mid"},{l:"💎 RM40+",v:"high"}];
+  let qr;
+  if (S.country === 'ph' && cc.budgetGrabQR) {
+    qr = cc.budgetGrabQR.map(x => ({...x, grab:true}));
+  } else if (isTH) {
+    qr = [{l:"💰 <฿100",v:"low",grab:true},{l:"💳 ฿100–300",v:"mid",grab:true},{l:"💎 ฿300+",v:"high",grab:true}];
+  } else {
+    qr = [{l:"💰 Under RM20",v:"low",grab:true},{l:"💳 RM20–40",v:"mid",grab:true},{l:"💎 RM40+",v:"high",grab:true}];
+  }
   setQR(qr, true);
 }
 
@@ -2275,9 +2574,12 @@ async function showResults() {
     {'overseas-guests':'for your guests','team-outing':'for the team','daily-lunch':'for you today'}[S.occasion]||'',
     {'overseas-guests':'สำหรับแขกของคุณ','team-outing':'สำหรับทีม','daily-lunch':'สำหรับคุณวันนี้'}[S.occasion]||''
   );
-  const ratingNote = S.country === 'th' ? 'Google & Wongnai' : 'Google';
+  const ratingNote = S.country === 'th' ? 'Google & Wongnai' : S.country === 'ph' ? 'Google Maps, TikTok & Instagram' : 'Google';
+  const ratingLine = S.country === 'ph'
+    ? `Here are my top picks ${occLabel} — curated from <strong>${ratingNote}</strong> (most cards <strong>⭐ 4.0+</strong> on Google; we still surface trusted 3.5★ neighbourhood gems when they’re the best fit) ${isDinner?'🌙':'☀️'}`
+    : `Here are my top picks ${occLabel} — all <strong>⭐ 4.0+ rated on ${ratingNote}</strong> ${isDinner?'🌙':'☀️'}`;
   await botSay(t(
-    `Here are my top picks ${occLabel} — all <strong>⭐ 4.0+ rated on ${ratingNote}</strong> ${isDinner?'🌙':'☀️'}`,
+    ratingLine,
     `นี่คือตัวเลือกที่ดีที่สุด${occLabel} — ทุกร้านได้ <strong>⭐ 4.0+ บน ${ratingNote}</strong> ${isDinner?'🌙':'☀️'}`
   ), 700);
 
@@ -2418,11 +2720,11 @@ async function startChat() {
         <span class="city-sub">The PARQ, Bangkok</span>
       </div>
     </button>
-    <button class="city-btn coming-soon">
+    <button class="city-btn" onclick="pickCountry('ph')">
       <span class="city-flag">🇵🇭</span>
       <div class="city-info">
-        <span class="city-name">Philippines &nbsp;<span style="font-size:10px;background:#eee;color:#888;padding:1px 7px;border-radius:10px;font-weight:600">Coming soon</span></span>
-        <span class="city-sub">BGC, Manila</span>
+        <span class="city-name">Philippines</span>
+        <span class="city-sub">Exquadra Tower, Ortigas, Pasig</span>
       </div>
     </button>`;
   qrEl.appendChild(tabsEl);
@@ -2449,6 +2751,9 @@ window.pickCountry = async function(code) {
 
 async function askOccasion() {
   const cc = COUNTRY_CONFIG[S.country] || COUNTRY_CONFIG.my;
+  if (cc.countryIntro) {
+    await botSay(cc.countryIntro, 900);
+  }
   const hooksArr = (S.country === 'th' && S.lang === 'th' && cc.hooksTH) ? cc.hooksTH : cc.hooks;
   const hook = hooksArr[new Date().getDay() % hooksArr.length];
   await botSay(`${hook}<br><br>${PEAK.level!=='green'?`<span style="font-weight:600">${PEAK.label}</span> — ${PEAK.note}<br><br>`:''}${t("What's the occasion today?","วันนี้มาทานกับใคร?")}`, 700);
